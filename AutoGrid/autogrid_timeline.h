@@ -3,7 +3,7 @@
 
 
 #include "autogrid.h"
-
+#include <QMouseEvent>
 class AutoGrid_TimeLine : public AutoGrid
 {
 public:
@@ -11,9 +11,16 @@ public:
 
     void DrawXTick();
     void DrawYTick();
+    void DrawCrossLine();
 
     void virtual paintEvent(QPaintEvent* event);
     void virtual resizeEvent(QResizeEvent *event);
+    void virtual mouseMoveEvent(QMouseEvent* event);
+    void virtual mousePressEvent(QMouseEvent* event);
+
+private:
+    QPoint mousePoint ;
+    bool showCross = false;
 };
 
 #endif // AUTOGRID_TIMELINE_H

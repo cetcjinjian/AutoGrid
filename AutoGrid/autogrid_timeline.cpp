@@ -14,6 +14,8 @@ void AutoGrid_TimeLine::paintEvent(QPaintEvent* event)
 {
     AutoGrid::paintEvent(event);
     DrawXTick();
+    if(showCross)
+        DrawCrossLine();
 }
 
 
@@ -45,4 +47,42 @@ void AutoGrid_TimeLine::DrawXTick()
         painter.drawText(px,py,str);
     }
 
+}
+
+
+void AutoGrid_TimeLine::mouseMoveEvent(QMouseEvent* event)
+{
+    mousePoint = QPoint(event->pos());
+    float xmin = COORDINATE_X1;
+    float xmax = m_CurrentWidth - COORDINATE_X2;
+    float ymin = COORDINATE_Y1;
+    float ymax = m_CurrentHeight - COORDINATE_Y2;
+
+    if(mousePoint.y() < ymin || mousePoint.y() > ymax){
+        return;
+    }
+    if(mousePoint.x() < xmin || mousePoint.x() > xmax){
+        return;
+    }
+    update();
+}
+
+void AutoGrid_TimeLine::DrawCrossLine()
+{
+    QLine horLine(COORDINATE_X1,mousePoint.y(),m_CurrentWidth-COORDINATE_X1,mousePoint.y());
+    QLine verLine(mousePoint.x(),COORDINATE_Y1,mousePoint.x(),m_CurrentHeight-COORDINATE_Y2);
+    QPainter painter(this);
+    QPen     pen;
+    pen.setColor(QColor("#FFFFFF"));
+    pen.setWidth(1);
+    painter.setPen(pen);
+    painter.drawLine(horLine);
+    painter.drawLine(verLine);
+}
+
+void AutoGrid_TimeLine::mousePressEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+        showCross = !showCross;
+    update();
 }

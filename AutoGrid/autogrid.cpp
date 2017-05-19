@@ -5,8 +5,11 @@
 
 AutoGrid::AutoGrid(QWidget *parent) : QWidget(parent)
 {
+
     DrawBK();
     Initial();
+    //开启鼠标追踪
+    setMouseTracking(true);
 }
 
 void AutoGrid::Initial()
@@ -147,6 +150,7 @@ void AutoGrid::calGridWidth()
     m_atomGridWidth = m_GridWidth / 8;
     wgridNum = 8;
 }
+
 
 
 
