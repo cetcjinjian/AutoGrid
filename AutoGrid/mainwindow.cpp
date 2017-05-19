@@ -1,6 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "autogrid_timeline.h"
+#include "AutoGrid_TimeLine_DataFromFile.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 
-    pgrid = new AutoGrid_TimeLine(this);
+    pgrid = new AutoGrid_TimeLine_DataFromFile(this);
     pgrid->setObjectName(tr("AutoGrid"));
     setCentralWidget(pgrid);
 

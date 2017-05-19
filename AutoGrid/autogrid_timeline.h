@@ -18,7 +18,7 @@ public:
     void virtual mouseMoveEvent(QMouseEvent* event);
     void virtual mousePressEvent(QMouseEvent* event);
 
-private:
+public:
     QPoint mousePoint ;
     bool showCross = false;
 };
