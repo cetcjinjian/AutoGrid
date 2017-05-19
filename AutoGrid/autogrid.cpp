@@ -73,7 +73,7 @@ void AutoGrid::DrawGrid()
 
     for(int i = 0;i<wgridNum+1;++i)
     {
-        if( i == wgridNum/2 || i == 0 || i == wgridNum)
+        if( i % 2 == 0 )
         {
             pen.setStyle(Qt::SolidLine);
             painter.setPen(pen);
@@ -132,6 +132,9 @@ void AutoGrid::calGridHeight()
 
 void AutoGrid::calGridWidth()
 {
+
+    /*
+     * 水平网格实现缩放-但同花顺并不使用
     wgridNum = 0;
     int width = m_GridWidth;
     while( width - 2 * m_atomGridWidthMin > 2 * m_atomGridWidthMin)
@@ -140,6 +143,9 @@ void AutoGrid::calGridWidth()
         width -= 2 * m_atomGridWidthMin;
     }
     m_atomGridWidth = m_GridWidth / wgridNum;
+    */
+    m_atomGridWidth = m_GridWidth / 8;
+    wgridNum = 8;
 }
 
 
