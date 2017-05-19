@@ -14,6 +14,12 @@ void AutoGrid::Initial()
     m_atomGridHeight = 20;
     m_atomGridHeightMin = 20;
     m_atomGridHeightMax = 30;
+
+
+    m_atomGridWidth = 80;
+    m_atomGridWidthMin = 80;
+    m_atomGridWidthMax = 100;
+
 }
 
 
@@ -39,6 +45,8 @@ void AutoGrid::DrawGrid()
     int xend =  m_CurrentWidth - COORDINATE_X2;
     int yend = COORDINATE_Y1;
 
+
+    //画水平方向
     for(int i=0;i<hgridNum+1 ;++i)
     {
         if( i == hgridNum/2 || i == 0 || i == hgridNum)
@@ -54,6 +62,31 @@ void AutoGrid::DrawGrid()
         painter.drawLine(xstart,ystart+i*m_atomGridHeight,
                          xend,yend+i*m_atomGridHeight);
     }
+
+
+    xstart = COORDINATE_X1;
+    ystart = COORDINATE_Y1;
+    xend =  COORDINATE_X1;
+    yend = m_CurrentHeight - COORDINATE_Y2;
+
+    //画垂直方向
+
+    for(int i = 0;i<wgridNum+1;++i)
+    {
+        if( i == wgridNum/2 || i == 0 || i == wgridNum)
+        {
+            pen.setStyle(Qt::SolidLine);
+            painter.setPen(pen);
+        }
+        else
+        {
+            pen.setStyle(Qt::DashLine);
+            painter.setPen(pen);
+        }
+        painter.drawLine(xstart +i*m_atomGridWidth,ystart,
+                         xstart +i*m_atomGridWidth,yend);
+    }
+
 }
 
 
@@ -99,7 +132,14 @@ void AutoGrid::calGridHeight()
 
 void AutoGrid::calGridWidth()
 {
-
+    wgridNum = 0;
+    int width = m_GridWidth;
+    while( width - 2 * m_atomGridWidthMin > 2 * m_atomGridWidthMin)
+    {
+        wgridNum += 2;
+        width -= 2 * m_atomGridWidthMin;
+    }
+    m_atomGridWidth = m_GridWidth / wgridNum;
 }
 
 
