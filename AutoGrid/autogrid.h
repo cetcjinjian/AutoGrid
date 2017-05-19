@@ -26,7 +26,7 @@ public:
     void calGridHeight();
     void calGridWidth();
 
-private:
+public:
     //当前widget宽度和高度
     int m_CurrentHeight;
     int m_CurrentWidth;

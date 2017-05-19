@@ -25,9 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    autogrid.cpp
+    autogrid.cpp \
+    autogrid_timeline.cpp
 
 HEADERS  += mainwindow.h \
-    autogrid.h
+    autogrid.h \
+    autogrid_timeline.h
 
 FORMS    += mainwindow.ui

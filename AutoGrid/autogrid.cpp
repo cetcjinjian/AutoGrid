@@ -56,7 +56,7 @@ void AutoGrid::DrawGrid()
         }
         else
         {
-            pen.setStyle(Qt::DashLine);
+            pen.setStyle(Qt::DashDotLine);
             painter.setPen(pen);
         }
         painter.drawLine(xstart,ystart+i*m_atomGridHeight,
@@ -80,7 +80,7 @@ void AutoGrid::DrawGrid()
         }
         else
         {
-            pen.setStyle(Qt::DashLine);
+            pen.setStyle(Qt::DashDotLine);
             painter.setPen(pen);
         }
         painter.drawLine(xstart +i*m_atomGridWidth,ystart,
