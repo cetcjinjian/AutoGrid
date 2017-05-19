@@ -41,7 +41,7 @@ void AutoGrid::DrawGrid()
 
     for(int i=0;i<hgridNum+1 ;++i)
     {
-        if( i == hgridNum/2 )
+        if( i == hgridNum/2 || i == 0 || i == hgridNum)
         {
             pen.setStyle(Qt::SolidLine);
             painter.setPen(pen);
