@@ -1,4 +1,4 @@
-#ifndef AUTOGRID_H
+﻿#ifndef AUTOGRID_H
 #define AUTOGRID_H
 
 #include <QWidget>
@@ -17,18 +17,37 @@ class AutoGrid : public QWidget
     Q_OBJECT
 public:
     explicit AutoGrid(QWidget *parent = 0);
+    void Initial();
     void DrawBK();
     void DrawGrid();
     void DrawBorder();
     void virtual paintEvent(QPaintEvent* event);
     void virtual resizeEvent(QResizeEvent *event);
+    void calGridHeight();
+    void calGridWidth();
 
 private:
+    //当前widget宽度和高度
     int m_CurrentHeight;
     int m_CurrentWidth;
 
+    //当前表格宽度和高度
     float m_GridHeight;
     float m_GridWidth;
+
+    //一小格最大高度，最小高度，当前高度
+    float m_atomGridHeight;
+    float m_atomGridHeightMax;
+    float m_atomGridHeightMin;
+
+    //一小格最大宽度，最小宽度，当前宽度
+    float m_atomGridWidth;
+    float m_atomGridWidthMax;
+    float m_atomGridWidthMin;
+
+    //当前小格子数量
+    int hgridNum;
+    int wgridNum;
 
 signals:
 
