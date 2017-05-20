@@ -4,6 +4,7 @@
 
 
 #include "autogrid_timeline.h"
+#include "readdata.h"
 
 class AutoGrid_TimeLine_DataFromFile : public AutoGrid_TimeLine
 {
@@ -13,6 +14,16 @@ public:
     void virtual paintEvent(QPaintEvent* event);
     void virtual resizeEvent(QResizeEvent *event);
     void virtual mouseMoveEvent(QMouseEvent* event);
+    void virtual mousePressEvent(QMouseEvent* event);
+    void DrawYTick();
+    void DrawTimeLine();
+    void DrawTips();
+
+
+public:
+
+    ReadData m_data;
+    int TEXT_LEN = 50;
 
 };
 

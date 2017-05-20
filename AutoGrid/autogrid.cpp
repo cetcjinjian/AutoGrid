@@ -14,9 +14,9 @@ AutoGrid::AutoGrid(QWidget *parent) : QWidget(parent)
 
 void AutoGrid::Initial()
 {
-    m_atomGridHeight = 20;
-    m_atomGridHeightMin = 20;
-    m_atomGridHeightMax = 30;
+    m_atomGridHeight = 30;
+    m_atomGridHeightMin = 30;
+    m_atomGridHeightMax = 40;
 
 
     m_atomGridWidth = 80;
