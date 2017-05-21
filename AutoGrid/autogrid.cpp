@@ -38,58 +38,10 @@ void AutoGrid::DrawBK()
 
 void AutoGrid::DrawGrid()
 {
-    QPainter painter(this);
-    QPen     pen;
-    pen.setColor(QColor("#FF0000"));
-    painter.setPen(pen);
-
-    int xstart = COORDINATE_X1;
-    int ystart = COORDINATE_Y1;
-    int xend =  m_CurrentWidth - COORDINATE_X2;
-    int yend = COORDINATE_Y1;
-
-
-    //画水平方向
-    for(int i=0;i<hgridNum+1 ;++i)
-    {
-        if( i == hgridNum/2 || i == 0 || i == hgridNum)
-        {
-            pen.setStyle(Qt::SolidLine);
-            painter.setPen(pen);
-        }
-        else
-        {
-            pen.setStyle(Qt::DashDotLine);
-            painter.setPen(pen);
-        }
-        painter.drawLine(xstart,ystart+i*m_atomGridHeight,
-                         xend,yend+i*m_atomGridHeight);
-    }
-
-
-    xstart = COORDINATE_X1;
-    ystart = COORDINATE_Y1;
-    xend =  COORDINATE_X1;
-    yend = m_CurrentHeight - COORDINATE_Y2;
-
-    //画垂直方向
-
-    for(int i = 0;i<wgridNum+1;++i)
-    {
-        if( i % 2 == 0 )
-        {
-            pen.setStyle(Qt::SolidLine);
-            painter.setPen(pen);
-        }
-        else
-        {
-            pen.setStyle(Qt::DashDotLine);
-            painter.setPen(pen);
-        }
-        painter.drawLine(xstart +i*m_atomGridWidth,ystart,
-                         xstart +i*m_atomGridWidth,yend);
-    }
-
+    if(isShowHor)
+        DrawHorLine();
+    if(isShowVer)
+        DrawVerLine();
 }
 
 
@@ -152,6 +104,68 @@ void AutoGrid::calGridWidth()
 }
 
 
+void AutoGrid::DrawHorLine()
+{
+    QPainter painter(this);
+    QPen     pen;
+    pen.setColor(QColor("#FF0000"));
+    painter.setPen(pen);
+
+    int xstart = COORDINATE_X1;
+    int ystart = COORDINATE_Y1;
+    int xend =  m_CurrentWidth - COORDINATE_X2;
+    int yend = COORDINATE_Y1;
+
+
+    //画水平方向
+    for(int i=0;i<hgridNum+1 ;++i)
+    {
+        if( i == hgridNum/2 || i == 0 || i == hgridNum)
+        {
+            pen.setStyle(Qt::SolidLine);
+            painter.setPen(pen);
+        }
+        else
+        {
+            pen.setStyle(Qt::DashDotLine);
+            painter.setPen(pen);
+        }
+        painter.drawLine(xstart,ystart+i*m_atomGridHeight,
+                         xend,yend+i*m_atomGridHeight);
+    }
+}
+
+
+void AutoGrid::DrawVerLine()
+{
+    QPainter painter(this);
+    QPen     pen;
+    pen.setColor(QColor("#FF0000"));
+    painter.setPen(pen);
+
+    int xstart = COORDINATE_X1;
+    int xend = COORDINATE_X1;
+    int ystart = COORDINATE_Y1;
+    int yend = m_CurrentHeight - COORDINATE_Y2;
+
+    //画垂直方向
+
+    for(int i = 0;i<wgridNum+1;++i)
+    {
+        if( i % 2 == 0 )
+        {
+            pen.setStyle(Qt::SolidLine);
+            painter.setPen(pen);
+        }
+        else
+        {
+            pen.setStyle(Qt::DashDotLine);
+            painter.setPen(pen);
+        }
+        painter.drawLine(xstart +i*m_atomGridWidth,ystart,
+                         xend +i*m_atomGridWidth,yend);
+    }
+}
 
 
 

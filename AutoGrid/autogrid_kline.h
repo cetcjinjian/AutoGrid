@@ -1,10 +1,9 @@
-﻿#ifndef AUTOGRID_H
-#define AUTOGRID_H
+﻿#ifndef AUTOGRID_KLINE_H
+#define AUTOGRID_KLINE_H
+
 
 #include <QWidget>
-
-
-
+#include "readdatakline.h"
 
 #define COORDINATE_X1       80              //网格距左边距离
 #define COORDINATE_Y1       20              //网格距上边距离
@@ -12,11 +11,11 @@
 #define COORDINATE_Y2       20              //网格距下边距离
 
 
-class AutoGrid : public QWidget
+class AutoGrid_KLine : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AutoGrid(QWidget *parent = 0);
+    explicit AutoGrid_KLine(QWidget *parent = 0);
     void Initial();
     void DrawBK();
     void DrawGrid();
@@ -27,8 +26,17 @@ public:
     void calGridWidth();
     void DrawHorLine();
     void DrawVerLine();
+    void DrawkLine();
+
+
+    void DrawXTick();
+    void DrawYTick();
+    void DrawCrossLine();
 
 public:
+
+    ReadDataKLine m_kline;
+
     //当前widget宽度和高度
     int m_CurrentHeight;
     int m_CurrentWidth;
@@ -56,9 +64,19 @@ public:
     bool isShowHor = true;
     bool isShowVer = true;
 
+
+    int startTime ; //画k线的起始索引
+    int endTime ;   //画k线的终止索引
+    int totalTime;    //显示数量
+
+
+    int xinterLen;   //k线间隔
+    double yinterLen;
+    double yscale;
+
 signals:
 
 public slots:
 };
 
-#endif // AUTOGRID_H
+#endif // AutoGrid_KLine_H

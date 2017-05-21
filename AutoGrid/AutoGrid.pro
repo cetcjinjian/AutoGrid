@@ -28,12 +28,16 @@ SOURCES += main.cpp\
     autogrid.cpp \
     autogrid_timeline.cpp \
     autogrid_timeline_datafromfile.cpp \
-    readdata.cpp
+    readdata.cpp \
+    autogrid_kline.cpp \
+    readdatakline.cpp
 
 HEADERS  += mainwindow.h \
     autogrid.h \
     autogrid_timeline.h \
     autogrid_timeline_datafromfile.h \
-    readdata.h
+    readdata.h \
+    autogrid_kline.h \
+    readdatakline.h
 
 FORMS    += mainwindow.ui

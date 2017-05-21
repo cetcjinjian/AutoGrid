@@ -1,8 +1,9 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 #include "autogrid.h"
+#include "autogrid_kline.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,7 @@ public:
 private:
     Ui::MainWindow *ui;
     AutoGrid* pgrid;
+    AutoGrid_KLine* pkline;
 };
 
 #endif // MAINWINDOW_H
