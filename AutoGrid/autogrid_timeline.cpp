@@ -14,8 +14,8 @@ void AutoGrid_TimeLine::paintEvent(QPaintEvent* event)
 {
     AutoGrid::paintEvent(event);
     DrawXTick();
-    if(showCross)
-        DrawCrossLine();
+//    if(showCross)
+//        DrawCrossLine();
 }
 
 
@@ -31,7 +31,6 @@ void AutoGrid_TimeLine::DrawXTick()
     QPen     pen;
     pen.setColor(Qt::red);
     painter.setPen(pen);
-
     for(int i=0;i<wgridNum+1;++i)
     {
         double px =  COORDINATE_X1 - 10 + i * m_atomGridWidth;
@@ -46,7 +45,6 @@ void AutoGrid_TimeLine::DrawXTick()
         QString str = newTime.toString("HH:mm");
         painter.drawText(px,py,str);
     }
-
 }
 
 

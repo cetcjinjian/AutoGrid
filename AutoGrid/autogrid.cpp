@@ -6,8 +6,8 @@
 AutoGrid::AutoGrid(QWidget *parent) : QWidget(parent)
 {
 
-    DrawBK();
     Initial();
+    DrawBK();    
     //开启鼠标追踪
     setMouseTracking(true);
 }
@@ -16,13 +16,8 @@ void AutoGrid::Initial()
 {
     m_atomGridHeight = 30;
     m_atomGridHeightMin = 30;
-    m_atomGridHeightMax = 40;
-
-
     m_atomGridWidth = 80;
     m_atomGridWidthMin = 80;
-    m_atomGridWidthMax = 100;
-
 }
 
 
@@ -47,8 +42,6 @@ void AutoGrid::DrawGrid()
 
 void AutoGrid::paintEvent(QPaintEvent* event)
 {
-    calGridHeight();
-    calGridWidth();
     DrawGrid();
 }
 
@@ -66,9 +59,10 @@ void AutoGrid::resizeEvent(QResizeEvent *event)
 {
     m_CurrentHeight = this->height();
     m_CurrentWidth = this->width();
-
     m_GridHeight = m_CurrentHeight - COORDINATE_Y1 - COORDINATE_Y2;
     m_GridWidth = m_CurrentWidth - COORDINATE_X1 - COORDINATE_X2;
+    calGridHeight();
+    calGridWidth();
 }
 
 void AutoGrid::calGridHeight()
@@ -89,7 +83,7 @@ void AutoGrid::calGridWidth()
 {
 
     /*
-     * 水平网格实现缩放-但同花顺并不使用
+     * 垂直网格实现缩放-但同花顺并不使用
     wgridNum = 0;
     int width = m_GridWidth;
     while( width - 2 * m_atomGridWidthMin > 2 * m_atomGridWidthMin)
@@ -166,19 +160,3 @@ void AutoGrid::DrawVerLine()
                          xend +i*m_atomGridWidth,yend);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

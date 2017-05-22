@@ -11,12 +11,13 @@ public:
 
     void DrawXTick();
     void DrawYTick();
-    void DrawCrossLine();
+    void virtual DrawCrossLine();
 
     void virtual paintEvent(QPaintEvent* event);
     void virtual resizeEvent(QResizeEvent *event);
     void virtual mouseMoveEvent(QMouseEvent* event);
     void virtual mousePressEvent(QMouseEvent* event);
+
 
 public:
     QPoint mousePoint ;

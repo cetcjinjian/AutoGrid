@@ -3,6 +3,9 @@
 #include <QPainter>
 #include <QPen>
 #include <QDebug>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QKeyEvent>
 
 AutoGrid_KLine::AutoGrid_KLine(QWidget *parent) : QWidget(parent)
 {
@@ -13,28 +16,21 @@ AutoGrid_KLine::AutoGrid_KLine(QWidget *parent) : QWidget(parent)
     setMouseTracking(true);
     m_kline.ReadData(tr("dataKLine.txt"));
 
-    endTime = m_kline.m_kline.size() -1;
-    totalTime = 200;
-    if( endTime - totalTime > 0)
-        startTime = endTime - totalTime;
 
-
-
+    //初始化画线的位置
+    endPos = m_kline.m_kline.size() -1;
+    totalPos = 200;
+    if( endPos - totalPos > 0)
+        startPos = endPos - totalPos;
 }
 
 void AutoGrid_KLine::Initial()
 {
     m_atomGridHeight = 50;
     m_atomGridHeightMin = 50;
-    m_atomGridHeightMax = 50;
-
-
     m_atomGridWidth = 80;
     m_atomGridWidthMin = 80;
-    m_atomGridWidthMax = 100;
-
 }
-
 
 void AutoGrid_KLine::DrawBK()
 {
@@ -44,7 +40,6 @@ void AutoGrid_KLine::DrawBK()
     palette.setColor(QPalette::Window,QColor("#000000"));
     this->setPalette(palette);
 }
-
 
 void AutoGrid_KLine::DrawGrid()
 {
@@ -62,6 +57,7 @@ void AutoGrid_KLine::paintEvent(QPaintEvent* event)
     DrawGrid();    
     //DrawYTick();
     DrawkLine();
+    DrawCrossLine();
 }
 
 void AutoGrid_KLine::DrawBorder()
@@ -70,9 +66,6 @@ void AutoGrid_KLine::DrawBorder()
     QPen     pen;
     pen.setColor(QColor("#FF0000"));
     painter.setPen(pen);
-
-
-
 }
 
 void AutoGrid_KLine::resizeEvent(QResizeEvent *event)
@@ -97,7 +90,6 @@ void AutoGrid_KLine::calGridHeight()
         height -= 2 * m_atomGridHeightMin;
     }
     m_atomGridHeight = m_GridHeight / hgridNum;
-
 }
 
 
@@ -191,13 +183,13 @@ void AutoGrid_KLine::DrawkLine()
     QPoint p1;
     QPoint p2;
 
-    xinterLen = m_GridWidth / totalTime;
+    xinterLen = (double)m_GridWidth / totalPos;
 
     m_kline.m_highestBid = 0;
     m_kline.m_lowestBid =10000;
     m_kline.m_totalVolume = 0;
 
-    for(int i = startTime; i< endTime ;++i)
+    for(int i = startPos; i< endPos ;++i)
     {
         if(m_kline.m_kline[i].highestBid > m_kline.m_highestBid)
             m_kline.m_highestBid = m_kline.m_kline[i].highestBid;
@@ -206,35 +198,29 @@ void AutoGrid_KLine::DrawkLine()
         if(m_kline.m_kline[i].totalVolume > m_kline.m_totalVolume)
            m_kline.m_totalVolume = m_kline.m_kline[i].totalVolume;
     }
-    //DrawYTick();
 
 
+
+    //画Y轴刻度线
     pen.setColor(Qt::red);
     painter.setPen(pen);
 
-    double showhighestBid = m_kline.m_highestBid ;
-    double showlowestBid = m_kline.m_lowestBid  ;
-    //double showhighestBid = 20;
-    //double showlowestBid =11;
-
+    showhighestBid = m_kline.m_highestBid ;
+    showlowestBid = m_kline.m_lowestBid  ;
     yinterLen = (showhighestBid - showlowestBid) /hgridNum;
     yscale = m_GridHeight / (showhighestBid - showlowestBid);
-
-
     QString str;
     if( hgridNum == 0)
     {
         str.sprintf("%.2f",showlowestBid);
         painter.drawText(QPoint(m_CurrentWidth - COORDINATE_X2 +10,
                                 m_CurrentHeight - COORDINATE_Y2),str);
-
         str.sprintf("%.2f",showhighestBid);
         painter.drawText(QPoint(m_CurrentWidth - COORDINATE_X2 +10,
                                 COORDINATE_Y1),str);
 
         return;
     }
-
     for(int i=0; i<hgridNum+1;++i)
     {
          str.sprintf("%.2f",showlowestBid+ i*yinterLen);
@@ -245,44 +231,48 @@ void AutoGrid_KLine::DrawkLine()
 
 
 
-    for(int i = startTime; i< endTime ;++i)
+    //画k线
+    for(int i = startPos; i< endPos ;++i)
     {
         if( m_kline.m_kline[i].openingPrice > m_kline.m_kline[i].closeingPrice)
-             pen.setColor(Qt::green);
+             pen.setColor(QColor(85,252,252));
         else
             pen.setColor(Qt::red);
 
         //画最高价与最低价 粗线
         painter.setPen(pen);
 
+        lineWidth = m_GridWidth / totalPos ;
+        lineWidth = lineWidth - 0.2*lineWidth;
+        if( lineWidth < 3)
+            lineWidth = 3;
+
 
         //细线
         pen.setWidth(1);
         painter.setPen(pen);
-        p1.setX(COORDINATE_X1 + xinterLen*(i - startTime));
+        p1.setX(COORDINATE_X1 + xinterLen*(i - startPos) + 0.5*lineWidth);
         p1.setY( m_CurrentHeight - ( m_kline.m_kline[i].highestBid - showlowestBid)* yscale
                  -COORDINATE_Y2);
-        p2.setX(COORDINATE_X1 + xinterLen*(i - startTime));
+        p2.setX(COORDINATE_X1 + xinterLen*(i - startPos) + 0.5*lineWidth);
         p2.setY( m_CurrentHeight - ( m_kline.m_kline[i].lowestBid -  showlowestBid) * yscale
                  -COORDINATE_Y2);
         painter.drawLine(p1,p2);
 
 
 
-        pen.setWidth(3);
+
+        //粗线
+        pen.setWidth(lineWidth);
         painter.setPen(pen);
-        p1.setX(COORDINATE_X1 + xinterLen*(i - startTime));
+        p1.setX(COORDINATE_X1 + xinterLen*(i - startPos) + 0.5*lineWidth);
         p1.setY( m_CurrentHeight -( m_kline.m_kline[i].openingPrice  -showlowestBid)* yscale
                  -COORDINATE_Y2);
-        p2.setX(COORDINATE_X1 + xinterLen*(i - startTime));
+        p2.setX(COORDINATE_X1 + xinterLen*(i - startPos) + 0.5*lineWidth);
         p2.setY( m_CurrentHeight -( m_kline.m_kline[i].closeingPrice -showlowestBid)* yscale
                  -COORDINATE_Y2);
         painter.drawLine(p1,p2);
-
-
     }
-
-
 }
 
 
@@ -300,8 +290,8 @@ void AutoGrid_KLine::DrawYTick()
     pen.setColor(Qt::red);
     painter.setPen(pen);
 
-    double showhighestBid = m_kline.m_highestBid*1.2;
-    double showlowestBid = m_kline.m_lowestBid * 1.2;
+    double showhighestBid = m_kline.m_highestBid;
+    double showlowestBid = m_kline.m_lowestBid ;
     //double showhighestBid = 20;
     //double showlowestBid =11;
 
@@ -332,4 +322,178 @@ void AutoGrid_KLine::DrawYTick()
     }
 
 }
+
+void AutoGrid_KLine::DrawCrossLine()
+{
+
+//    QLine horLine(COORDINATE_X1,mpoint[count].y(),m_CurrentWidth-COORDINATE_X1,mpoint[count].y());
+//    QLine verLine(mpoint[count].x(),COORDINATE_Y1,mpoint[count].x(),m_CurrentHeight-COORDINATE_Y2);
+//    QPainter painter(this);
+//    QPen     pen;
+//    pen.setColor(QColor("#FFFFFF"));
+//    pen.setWidth(1);
+//    painter.setPen(pen);
+//    painter.drawLine(horLine);
+//    painter.drawLine(verLine);
+
+    QPainter painter(this);
+    QPen     pen;
+    pen.setColor(QColor("#FFFFFF"));
+    pen.setWidth(1);
+    painter.setPen(pen);
+
+
+
+
+
+    int x =  double (mousePoint.x() - COORDINATE_X1)/(m_GridWidth) * totalPos;
+    x = COORDINATE_X1 + xinterLen * x + 0.5*lineWidth;
+    QLine verLine( x,COORDINATE_Y1,x,m_CurrentHeight-COORDINATE_Y2);
+    painter.drawLine(verLine);
+
+
+
+
+    int count = (double)(mousePoint.x() - COORDINATE_X1)* totalPos/(m_GridWidth) + startPos;
+    int y = ( m_kline.m_kline[count].openingPrice  - showlowestBid )  * yscale;
+    QLine horLine(COORDINATE_X1, m_CurrentHeight -COORDINATE_Y2 - y  ,
+                  m_CurrentWidth -COORDINATE_X2 ,m_CurrentHeight -COORDINATE_Y2 - y );
+    painter.drawLine(horLine);
+
+    //QCursor::setPos(x,mousePoint.y());
+
+}
+
+
+
+void AutoGrid_KLine::mouseMoveEvent(QMouseEvent *event)
+{
+
+    mousePoint = QPoint(event->pos());
+    float xmin = COORDINATE_X1;
+    float xmax = m_CurrentWidth - COORDINATE_X2;
+    float ymin = COORDINATE_Y1;
+    float ymax = m_CurrentHeight - COORDINATE_Y2;
+
+    if(mousePoint.y() < ymin || mousePoint.y() > ymax){
+        return;
+    }
+    if(mousePoint.x() < xmin || mousePoint.x() > xmax){
+        return;
+    }
+    update();
+}
+
+
+
+void AutoGrid_KLine::mousePressEvent(QMouseEvent *event)
+{
+
+    currentPos = double( event->x() - COORDINATE_X1 ) / m_GridWidth * (endPos -  startPos) + startPos;
+
+    if(event->button() == Qt::LeftButton)
+        showCross = !showCross;
+    update();
+}
+
+
+void AutoGrid_KLine::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Up:
+
+        totalPos /= 2;
+
+        if( totalPos < 10)
+        {
+            totalPos *= 2;
+            return;
+        }
+
+
+        endPos = currentPos + totalPos / 2;
+        startPos = currentPos - totalPos / 2;
+
+        if( endPos > m_kline.m_kline.size())
+        {
+             endPos = m_kline.m_kline.size() -1;
+             startPos = endPos - totalPos;
+        }
+
+
+        if( startPos < 0)
+        {
+
+            startPos = 0;
+            endPos = startPos + totalPos;
+        }
+
+        if(endPos - totalPos < 0)
+        {
+            totalPos *= 2;
+            return;
+        }
+
+         startPos = endPos - totalPos;
+
+        break;
+    case Qt::Key_Down:
+
+        totalPos *= 2;
+
+
+        if( totalPos >  m_kline.m_kline.size())
+        {
+            totalPos = m_kline.m_kline.size();
+            return;
+        }
+
+
+        endPos = currentPos + totalPos / 2;
+        startPos = currentPos - totalPos / 2;
+
+
+        if( endPos > m_kline.m_kline.size())
+        {
+             endPos = m_kline.m_kline.size() -1;
+             startPos = endPos - totalPos;
+        }
+
+        if( startPos < 0)
+        {
+
+            startPos = 0;
+            endPos = startPos + totalPos;
+        }
+
+
+        if(endPos - totalPos < 0)
+        {
+            totalPos /= 2;
+            return;
+        }
+
+
+        startPos = endPos - totalPos;
+        break;
+    default:
+        break;
+    }
+
+
+    update();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

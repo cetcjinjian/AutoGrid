@@ -5,7 +5,6 @@
 
 
 
-
 #define COORDINATE_X1       80              //网格距左边距离
 #define COORDINATE_Y1       20              //网格距上边距离
 #define COORDINATE_X2       80              //网格距右边距离
@@ -37,20 +36,17 @@ public:
     float m_GridHeight;
     float m_GridWidth;
 
-    //一小格最大高度，最小高度，当前高度
-    float m_atomGridHeight;
-    float m_atomGridHeightMax;
+    //一小格最小高度，当前高度
+    float m_atomGridHeight;   
     float m_atomGridHeightMin;
 
-    //一小格最大宽度，最小宽度，当前宽度
-    float m_atomGridWidth;
-    float m_atomGridWidthMax;
+    //一小格最小宽度，当前宽度
+    float m_atomGridWidth;  
     float m_atomGridWidthMin;
 
     //当前小格子数量
     int hgridNum;
     int wgridNum;
-
 
     //是否显示水平线和垂直线
     bool isShowHor = true;
@@ -59,6 +55,8 @@ public:
 signals:
 
 public slots:
+
+
 };
 
 #endif // AUTOGRID_H

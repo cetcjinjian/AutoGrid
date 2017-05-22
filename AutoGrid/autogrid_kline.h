@@ -22,6 +22,10 @@ public:
     void DrawBorder();
     void virtual paintEvent(QPaintEvent* event);
     void virtual resizeEvent(QResizeEvent *event);
+    void virtual mouseMoveEvent(QMouseEvent* event);
+    void virtual mousePressEvent(QMouseEvent* event);
+    void virtual keyPressEvent(QKeyEvent* event);
+
     void calGridHeight();
     void calGridWidth();
     void DrawHorLine();
@@ -65,14 +69,30 @@ public:
     bool isShowVer = true;
 
 
-    int startTime ; //画k线的起始索引
-    int endTime ;   //画k线的终止索引
-    int totalTime;    //显示数量
+    int startPos ; //画k线的起始索引
+    int endPos ;   //画k线的终止索引
+    int currentPos; //当前k线索引
+    int totalPos;    //显示数量
 
 
-    int xinterLen;   //k线间隔
+    double xinterLen;   //k线间隔
     double yinterLen;
     double yscale;
+
+    bool showCross = false;
+    QPoint mousePoint;
+
+
+
+
+    //当前刻度的最高价与最低价
+    double showhighestBid;
+    double showlowestBid ;
+    //QPoint* mpoint;
+
+
+    //线宽
+    int lineWidth;
 
 signals:
 

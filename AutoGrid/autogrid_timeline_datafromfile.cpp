@@ -3,23 +3,36 @@
 #include <QPen>
 #include <QPainter>
 #include <QTime>
+#include <QMessageBox>
+#include <QKeyEvent>
 
 AutoGrid_TimeLine_DataFromFile::AutoGrid_TimeLine_DataFromFile(QWidget *parent)
                               :AutoGrid_TimeLine(parent)
 {
+    //mpoint.reserve(500);
+    mpoint = new QPoint[250];
     m_data.ReadFSJL();
     m_data.GetFSJLINFO();
 
+
 }
 
+AutoGrid_TimeLine_DataFromFile::~AutoGrid_TimeLine_DataFromFile()
+{
+    delete [] mpoint;
+    mpoint = nullptr;
+}
 
 void AutoGrid_TimeLine_DataFromFile::paintEvent(QPaintEvent *event)
 {
     AutoGrid_TimeLine::paintEvent(event);
+    //mpoint.clear();
     DrawYTick();
     DrawTimeLine();
     if(showCross)
         DrawTips();
+    if(showCross)
+        DrawCrossLine();
 }
 
 
@@ -117,12 +130,20 @@ void AutoGrid_TimeLine_DataFromFile::DrawTimeLine()
         double rate = float(m_data.fsjl[i].Deal - m_data.info.deal_Start) / m_data.info.deal_Start;
         p2.setY(m_CurrentHeight/2 - rate/m_data.info.deal_rate * (m_GridHeight/2) );
         painter.drawLine(p1,p2);
+        mpoint[i] = (p2);
         p1 = p2;
     }
+    // mpoint.push_back(p2);
 }
 
 void AutoGrid_TimeLine_DataFromFile::DrawTips()
 {
+    int xlen = mousePoint.x();
+    xlen -= COORDINATE_X1;
+    int count = ( (double)xlen / m_GridWidth ) * 241;
+
+   // mpoint[count].y();
+
     //底部时间显示
     QString text;
     double temp = float( mousePoint.x()  - COORDINATE_X1 ) / m_GridWidth ;
@@ -142,12 +163,12 @@ void AutoGrid_TimeLine_DataFromFile::DrawTips()
     pen.setWidth(1);
     painter.setBrush(brush);
     painter.setPen(pen);
-    QRect rectTime( mousePoint.x() - iTipsWidth/2 , m_CurrentHeight  - COORDINATE_Y2 ,
+    QRect rectTime(  mpoint[count].x() - iTipsWidth/2 , m_CurrentHeight  - COORDINATE_Y2 ,
                  iTipsWidth , iTipsHeight);
     painter.drawRect(rectTime);
 
 
-    QRect rectTimestr( mousePoint.x() - iTipsWidth/4, m_CurrentHeight  - COORDINATE_Y2 + iTipsHeight/4 ,
+    QRect rectTimestr(  mpoint[count].x() - iTipsWidth/4, m_CurrentHeight  - COORDINATE_Y2 + iTipsHeight/4 ,
                  iTipsWidth , iTipsHeight);
     painter.drawText(rectTimestr ,text);
 
@@ -155,23 +176,23 @@ void AutoGrid_TimeLine_DataFromFile::DrawTips()
     //两侧价格显示
 
     //左侧
-    double yval =  - ( mousePoint.y() -  m_CurrentHeight/2 ) /(m_GridHeight /2) * m_data.info.deal_rate ;
+    double yval =  - (  mpoint[count].y() -  m_CurrentHeight/2 ) /(m_GridHeight /2) * m_data.info.deal_rate ;
     yval = m_data.info.deal_Start /1000  * ( 1 + yval );
-    QRect rectYval (COORDINATE_X1-iTipsWidth,mousePoint.y() - iTipsHeight/2,
+    QRect rectYval (COORDINATE_X1-iTipsWidth, mpoint[count].y() - iTipsHeight/2,
                     iTipsWidth,iTipsHeight);
     painter.drawRect(rectYval);
-    QRect rectYvalstr (COORDINATE_X1-iTipsWidth + iTipsWidth/4,mousePoint.y() - iTipsHeight/4,
+    QRect rectYvalstr (COORDINATE_X1-iTipsWidth + iTipsWidth/4, mpoint[count].y() - iTipsHeight/4,
                     iTipsWidth,iTipsHeight);
     painter.drawText(rectYvalstr ,text.sprintf("%.2f",yval));
 
     //右侧
 
-    double ypec = - ( mousePoint.y() -  m_CurrentHeight/2 ) /(m_GridHeight /2) * m_data.info.deal_rate ;
-    QRect rectYpec (m_CurrentWidth-COORDINATE_X2,mousePoint.y() - iTipsHeight/2,
+    double ypec = - (  mpoint[count].y() -  m_CurrentHeight/2 ) /(m_GridHeight /2) * m_data.info.deal_rate ;
+    QRect rectYpec (m_CurrentWidth-COORDINATE_X2, mpoint[count].y() - iTipsHeight/2,
                     iTipsWidth,iTipsHeight);
     painter.drawRect(rectYpec);
 
-    QRect rectYstr (m_CurrentWidth-COORDINATE_X2 +iTipsWidth/4 ,mousePoint.y() - iTipsHeight/4,
+    QRect rectYstr (m_CurrentWidth-COORDINATE_X2 +iTipsWidth/4 , mpoint[count].y() - iTipsHeight/4,
                     iTipsWidth,iTipsHeight);
     painter.drawText(rectYstr,text.sprintf("%.2f%",ypec*100));
 
@@ -182,4 +203,48 @@ void AutoGrid_TimeLine_DataFromFile::mousePressEvent(QMouseEvent *event)
 {
     AutoGrid_TimeLine::mousePressEvent(event);
 }
+
+
+void AutoGrid_TimeLine_DataFromFile::keyPressEvent(QKeyEvent* event)
+{
+    switch(event->key())
+    {
+
+    case Qt::Key_Right:
+            mousePoint.setX(mousePoint.x() + (double)m_GridWidth/ 241);
+
+            if( mousePoint.x() < COORDINATE_X1 || mousePoint.x() >m_CurrentWidth -  COORDINATE_X2)
+                return;
+
+            update();
+            break;
+    case Qt::Key_Left :
+
+            mousePoint.setX(mousePoint.x() - (double)m_GridWidth/ 241);
+
+            if( mousePoint.x() < COORDINATE_X1 || mousePoint.x() >m_CurrentWidth -  COORDINATE_X2)
+                return;
+
+            update();
+            break ;
+    }
+}
+
+void AutoGrid_TimeLine_DataFromFile::DrawCrossLine()
+{
+    int xlen = mousePoint.x();
+    xlen -= COORDINATE_X1;
+    int count = ( (double)xlen / m_GridWidth ) * 241;
+
+    QLine horLine(COORDINATE_X1,mpoint[count].y(),m_CurrentWidth-COORDINATE_X1,mpoint[count].y());
+    QLine verLine(mpoint[count].x(),COORDINATE_Y1,mpoint[count].x(),m_CurrentHeight-COORDINATE_Y2);
+    QPainter painter(this);
+    QPen     pen;
+    pen.setColor(QColor("#FFFFFF"));
+    pen.setWidth(1);
+    painter.setPen(pen);
+    painter.drawLine(horLine);
+    painter.drawLine(verLine);
+}
+
 
