@@ -1,1 +1,3 @@
 # AutoGrid
+
+![](figure.jpg)
